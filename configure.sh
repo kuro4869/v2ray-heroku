@@ -10,28 +10,62 @@ rm -rf /v2ray.zip /usr/bin/v2ray/*.sig /usr/bin/v2ray/doc /usr/bin/v2ray/*.json 
 cat <<-EOF > /etc/v2ray/config.json
 {
   "inbounds": [
-  {
-    "port": ${PORT},
-    "protocol": "vmess",
-    "settings": {
-      "clients": [
-        {
-          "id": "${UUID}",
-          "alterId": 64
-        }
-      ]
+    {
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+              "port": 8080,
+              "protocol": "vless",
+              "settings": {
+                "decryption": "none",
+                "clients": [
+                  {
+                    "id": "V2_ID"
+                  }
+                ]
+              },
+              "streamSettings": {
+                "network":"ws",
+                "wsSettings": {
+                  "path": "/V2_PATH"
+                }
+              }
+            }
+          ],
+          "outbounds": [
+            {
+              "protocol": "freedom",
+              "settings": {},
+      "tag": "direct"
     },
-    "streamSettings": {
-      "network": "ws"
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "block"
     }
-  }
   ],
-  "outbounds": [
-  {
-    "protocol": "freedom",
-    "settings": {}
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "block",
+        "protocol": ["bittorrent"]
+      },
+      {
+        "type": "field",
+        "outboundTag": "block",
+        "ip": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "127.0.0.0/8",
+          "172.16.0.0/12",
+          "192.168.0.0/16"
+        ]
+      }
+    ]
   }
-  ]
 }
 EOF
 /usr/bin/v2ray/v2ray -config=/etc/v2ray/config.json
