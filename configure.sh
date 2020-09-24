@@ -15,7 +15,7 @@ cat <<-EOF > /etc/v2ray/config.json
         "enabled": true,
         "destOverride": ["http", "tls"]
       },
-              "port": 8080,
+              "port": 443,
               "protocol": "vless",
               "settings": {
                 "decryption": "none",
@@ -28,7 +28,7 @@ cat <<-EOF > /etc/v2ray/config.json
               "streamSettings": {
                 "network":"ws",
                 "wsSettings": {
-                  "path": "/V2_PATH"
+                  "path": "/"
                 }
               }
             }
